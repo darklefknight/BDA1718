@@ -3,7 +3,7 @@ import re
 
 if __name__ == "__main__":
     # FILE_PATH = "/home/bigdata/1/moby-dick.txt"
-    FILE_PATH = "C:/Users/darkl/Downloads/SampleTextFile_20kb.txt"
+    FILE_PATH = "C:/Users/darkl/Dropbox/moby-dick.txt"
 
     words = []
 
