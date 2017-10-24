@@ -32,6 +32,11 @@ if __name__ == "__main__":
             last_i = i
 
     del dictionary["Chapter0"]  # chapter 0 does not belong to the story, but is everything before chapter 1
+    for lastKey in dictionary.keys():
+        pass # get the key of the last chapter
+
+    dictionary[lastKey]
+
 
     count = {}
     for key in dictionary.keys():
@@ -56,4 +61,4 @@ if __name__ == "__main__":
 
     ax1.set_ylabel("Number of occurrences of the word '%s'" %word)
     ax1.set_xlabel("Number of the Chapter")
-    plt.savefig()
+    # plt.savefig()
