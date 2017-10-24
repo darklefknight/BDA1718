@@ -3,27 +3,26 @@ import re
 
 if __name__ == "__main__":
     # FILE_PATH = "/home/bigdata/1/moby-dick.txt"
-    FILE_PATH = "C:/Users/darkl/Dropbox/moby-dick.txt"
+    FILE_PATH = "C:/Users/darkl/Downloads/SampleTextFile_20kb.txt"
+
+    words = []
 
     with open(FILE_PATH, "r") as f:
-        lines = f.readlines()  # read whole file
+        lines = f.readlines()   # read whole file
 
-    counter = 1
-    last_i = 0
-    dictionary = {}
-    for i, line in enumerate(lines):
-        if "CHAPTER %i" % counter in line:  # Find the chapter title
-            Key = "Chapter%i" % (counter - 1)  # make dictionary key
-            dictionary[Key] = lines[last_i:i]  # add lines to dictionary
+    lines = [line.strip() for line in lines]    # remove EOL-charachter from each line
+    lines = " ".join(lines).lower() # Join list into one string and make everything lower case
 
-            counter += 1
-            last_i = i
+    words = [] # initialize empty list
+    counter = {} # initialize empty dictionary
+    for word in lines.split():
+        word = word.replace(",","").replace(".","").replace("?","").replace("!","") # replace delimiters.
+        if not word in words:   # count every word just once
+            wordCount = len(re.findall(word,lines)) # count the word in the string
+            counter[word] = wordCount # append word to dictionary, with word as key and count as value
+            words.append(word)
 
-    del dictionary["Chapter0"]  # chapter 0 does not belong to the story, but is everything before chapter 1
+    Top10 = sorted(counter, key=counter.get, reverse=True)[:10]     # get dictionary keys with 10 highest values
 
-
-
-    # Top10 = sorted(counter, key=counter.get, reverse=True)[:10]     # get dictionary keys with 10 highest values
-    #
-    # for key in Top10:
-    #     print("%s, %i" %(key, counter[key]))    # print top 10 key plus value
+    for key in Top10:
+        print("%s, %i" %(key, counter[key]))    # print top 10 key plus value
