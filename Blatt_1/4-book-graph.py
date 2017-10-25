@@ -7,8 +7,8 @@ def countWordInChapter(word, string):
     return len(re.findall(word.lower(), string.lower()))
 
 if __name__ == "__main__":
-    # FILE_PATH = "/home/bigdata/1/moby-dick.txt"
-    FILE_PATH = "C:/Users/darkl/Dropbox/moby-dick.txt"
+    FILE_PATH = "/home/bigdata/1/moby-dick.txt"
+    # FILE_PATH = "C:/Users/darkl/Dropbox/moby-dick.txt"
 
     parser = argparse.ArgumentParser(description='Add a word you want to count in Moby Dick.')
     parser.add_argument(type=str,dest="word",
