@@ -1,1 +1,88 @@
-Test fuer GitHub... Die Aufgabe werde ich aber auch noch bearbeiten.
+a) Familiarize yourself with the usage of man-pages:
+
+$ man man
+>MAN(1)                        Manual pager utils                        MAN(1)
+>
+>NAME
+>       man - an interface to the on-line reference manuals
+>
+>SYNOPSIS
+>       ...
+>
+>DESCRIPTION
+>       man is the system's manual pager.  Each page argument given to  man  is
+>       normally  the  name of a program, utility or function.
+>
+>The program 'man' offers you some instruction for an other program, utility or function.
+
+b) Print your current working directory:
+
+$ man pwd
+>/home/burgemeister
+
+c) Show all files in your home directory:
+
+# all visible files/directories
+$ls
+>exercise_01
+
+# all files (listed)
+$ls -al
+>total 105
+>drwx------   6 burgemeister bd-1718   12 Oct 25 22:14 .
+>drwxr-xr-x 545 root         root     546 Oct 25 21:21 ..
+>-rw-------   1 burgemeister bd-1718  145 Oct 25 11:51 .bash_history
+>-rw-------   1 burgemeister bd-1718  220 Oct 24 14:55 .bash_logout
+>-rw-------   1 burgemeister bd-1718 3943 Oct 24 14:55 .bashrc
+>drwx------   2 burgemeister bd-1718    3 Oct 24 14:55 .cache
+>drwxr-xr-x   2 burgemeister bd-1718    2 Oct 24 14:57 exercise_01
+>-rw-------   1 burgemeister bd-1718 2181 Oct 24 14:55 .kshrc
+>-rw-------   1 burgemeister bd-1718  655 Oct 24 14:55 .profile
+>drwxr-xr-x   3 burgemeister bd-1718    3 Oct 24 14:55 .spack
+>drwx------   2 burgemeister bd-1718    6 Oct 24 14:56 .ssh
+>-rw-------   1 burgemeister bd-1718  200 Oct 25 22:14 .Xauthority
+
+d) Create a directory named testdir
+
+$mkdir
+
+e) Change your working directory to the newly created one
+
+$ cd testdir
+
+f) Output the current working directory once more.
+
+$ls
+>exercise_01 testdir
+
+g) Create an empty file named testfile
+
+$touch testfile
+
+Touch change file timestamps. If the file does not exist, an empty file is supplied.
+
+h) Rename the file to testfile2
+
+$ mv testfile testfile2
+
+The program 'mv' moves the file to the new path, for this reason it's renamed.
+
+i) Copy the renamed file to testfile3
+
+$ cp testfile2 testfile3
+
+This command copies the source file to the final file.
+
+j) Delete the file testfile2
+
+$ rm testfile2
+
+self-explanatory...
+
+QUESTION: Why is the manual page cd titled ”POSIX Programmer’s Manual” whereas other manual
+pages have the title ”User Commands” ? (hint: Study the cd manual-page in detail.)
+
+There is no manual-page for the command cd, because cd is a builtin shell command. These builtin commands are part
+of the shell, and are implemented as part of the shell's source code. The shell recognizes that the command that it was
+asked to execute was one of its builtins, and it performs that action on its own, without calling out to a separate
+executable.
