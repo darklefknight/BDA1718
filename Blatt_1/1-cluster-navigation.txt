@@ -83,6 +83,6 @@ QUESTION: Why is the manual page cd titled ”POSIX Programmer’s Manual” whe
 pages have the title ”User Commands” ? (hint: Study the cd manual-page in detail.)
 
 There is no manual-page for the command cd, because cd is a builtin shell command. These builtin commands are part
-of the shell, and are implemented as part of the shell's source code. The shell recognizes that the command that it was
-asked to execute was one of its builtins, and it performs that action on its own, without calling out to a separate
+of the shell and are implemented as part of the shell's source code. The shell recognizes that the command that it was
+asked to execute was one of its builtins. It performs that action on its own without calling out to a separate
 executable.
