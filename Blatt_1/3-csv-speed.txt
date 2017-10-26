@@ -1,1 +1,19 @@
-...
+No Word needed... the performance of our R script is bad in comparison to the python script. Probably the result
+follow from very basic R skills.
+
+(i) Evaluation of runtime of python script
+$time python 3-csv.py ../../WORK/Blatt1/pitbull-ddw1024k.csv 2
+>   The mean of column 2 is 0.001295
+>
+>   real	0m0.354s
+>   user	0m0.313s
+>   sys	    0m0.040s
+
+
+(ii) Evaluation of runtime of Rscript script
+$time Rscript pitbull-ddw1024k.csv 2
+>   [1] "The mean of the column 2 is 0.00129467207402999"
+>
+>   real	0m2.777s
+>   user	0m2.680s
+>   sys	    0m0.094s
