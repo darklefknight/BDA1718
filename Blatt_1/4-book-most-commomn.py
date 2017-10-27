@@ -25,7 +25,6 @@ if __name__ == "__main__":
     words = []  # initialize empty list
     counter = {}  # initialize empty dictionary
     for word in lines.split(" "):
-        word = removeStuffFromString(word)
         if not word in words:  # count every word just once
             if ((len(word) <= 1) and (word != "a") and (word != "i")): continue
             wordCount = len(re.findall(word, lines))  # count the word in the string
