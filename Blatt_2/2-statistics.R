@@ -33,11 +33,11 @@ importData = function(filename){
 
 averageWordOccurence = function(dataFile, specWord){
 
-    #Import the data and restructure from moby-dick.csv
+    #Average occurrences of any word
     #
     #   param dataFile: chapter, chapterLength, words, wordOccurrence (list)
     #   param word:     word for analysis (str)
-    #   return:         meanWordOccurence (float)
+    #   return:         meanWordOccurrence (float)
 
     chapter = dataFile[[1]]
     chapterLength = dataFile[[2]]
@@ -47,15 +47,47 @@ averageWordOccurence = function(dataFile, specWord){
     specWordOccurrence = matrix(0, length(chapter), 1)
 
     for(numChapter in 1:length(chapter)){
-        specWordOccurrence[numChapter] = as.numeric(unlist(wordOccurrences[[numChapter]][grep(specWord, words[numChapter])]))
+        specWordOccurrence[numChapter] = as.numeric(
+            unlist(wordOccurrences[[numChapter]][grep(specWord, words[numChapter])])
+        )
     }
 
-    meanWordOccurence = mean(specWordOccurrence)
+    meanWordOccurrence = mean(specWordOccurrence)
 
-    return meanWordOccurrence
+    return(list(specWordOccurrence, meanWordOccurrence))
 }
 
+histFrequency = function(averageWord, specWord){
+
+    #Create a histogram showing frequency distributions of any give word across all chapters
+    #
+    #   param dataFile: specWordOccurrence, meanWordOccurrence (list)
+
+    pdf(file="../../WORK/Blatt2/plot.pdf")
+
+    chapterWordOccurrence = as.vector(averageWord[[1]])
+
+    print(chapterWordOccurrence)
+
+    barplot(chapterWordOccurrence,
+        main=paste("Histogram of frequency distribution of \"",specWord,"\" over all chapters.", sep=""),
+        xlab="Chapters (1...134)"
+    )
+
+    #axis(1, seq(1,134,67),c(1,134))
+    #, cex.names=0.8
+    #names.arg=c(1:length(chapterWordOccurrence))
+
+    dev.off()
+}
+
+
 myData = importData("../../WORK/Blatt2/moby-dick.csv")
-averageWordOccurence(myData, "")
+
+specWord = ""
+
+averageWord = averageWordOccurence(myData, specWord)
+
+histFrequency(averageWord, specWord)
 
 #warnings()
