@@ -1,5 +1,5 @@
 import urllib.request
-import re
+
 
 def clean_extract_Images(text):
     """
@@ -10,7 +10,7 @@ def clean_extract_Images(text):
                 list_of_removed_content - list of links to the images inside that wikipedia-page
     """
 
-    splitted_text = text.split("\n")    # split the string at each newline char
+    splitted_text = text.split("\n")  # split the string at each newline char
     cleaned_text = []
     image_lines = []
     page_name = "not found"
@@ -36,7 +36,7 @@ def clean_extract_Images(text):
                 elif ".gif" in text:
                     text = text[:text.index('.gif') + 4]
                 indices = [i for i, x in enumerate(text) if x == "/"]
-                text = text[indices[-1] + 1 :]
+                text = text[indices[-1] + 1:]
                 # The Question-book logo is not part of the articles content but of the wikipedia-main-content,
                 # so it is located at a diiferent path:
                 if not "Question_book" in text:
@@ -49,9 +49,10 @@ def clean_extract_Images(text):
         else:
             cleaned_text.append(line + "\n")
 
-    cleaned_text = " ".join(cleaned_text)   # make the page one string again
+    cleaned_text = " ".join(cleaned_text)  # make the page one string again
     list_of_removed_content = image_lines
-    return (cleaned_text,list_of_removed_content)
+    return (cleaned_text, list_of_removed_content)
+
 
 def clean_extract_Tables(text):
     """
@@ -96,20 +97,20 @@ def clean_extract_Tables(text):
                     continue
                 if "</tr" in tableLine:
                     isHeader = False
-                    break # after the column names have been found we can jump to the next table
+                    break  # after the column names have been found we can jump to the next table
 
                 if isHeader:
                     headerLine = tableLine[tableLine.index(">") + 1:]
                     headerLine = headerLine[:headerLine.index("<")]
-                    tableHeaders[key] += headerLine + ";" # append an ";" after each column name
-
+                    tableHeaders[key] += headerLine + ";"  # append an ";" after each column name
 
     list_of_removed_content = []
     for key in tableHeaders:
-        if len(tableHeaders[key][:-1]) > 1: # get rid of empty strings
-            list_of_removed_content.append(tableHeaders[key][:-1]) # exclude the last semicolon
-    cleaned_text = " ".join(cleaned_text) # make the wikipedia page one string again
+        if len(tableHeaders[key][:-1]) > 1:  # get rid of empty strings
+            list_of_removed_content.append(tableHeaders[key][:-1])  # exclude the last semicolon
+    cleaned_text = " ".join(cleaned_text)  # make the wikipedia page one string again
     return (cleaned_text, list_of_removed_content)
+
 
 if __name__ == "__main__":
     # get an example wikipedia article:
@@ -118,9 +119,8 @@ if __name__ == "__main__":
     text = page.read()
     text = text.decode()
 
-
-    cleaned_text,liste = clean_extract_Images(text)
+    cleaned_text, liste = clean_extract_Images(text)
     print(liste)
 
-    cleaned_text,liste = clean_extract_Tables(cleaned_text)
+    cleaned_text, liste = clean_extract_Tables(cleaned_text)
     print(liste)
