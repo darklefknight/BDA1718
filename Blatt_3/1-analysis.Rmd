@@ -1,0 +1,105 @@
+---
+title: "Exploration Diamonds Data Set"
+author: "Finn Burgemeister und Tobias Machnitzki"
+output: pdf_document
+---
+# 1.
+First we want to load the data and get an overview of what we are dealing with. 
+
+```{r}
+library(ggplot2)
+library(scales)
+library(dplyr)
+library(knitr)
+library(markdown)
+data(diamonds)
+summary(diamonds)
+
+
+```
+
+The first thing we notice is that cut, color and clarity do not contain numbers for evaluation, but some kind of tags.
+So lets look at some combinations:
+```{r}
+ggplot(diamonds, aes(x = color, y = price)) +
+  stat_boxplot(geom="errorbar") +
+  geom_boxplot() +
+  coord_cartesian(ylim=c(0, 20000)) +
+  scale_y_continuous(labels=dollar) + 
+  xlab("color") + ylab("Price")
+```
+
+```{r}
+ggplot(diamonds, aes(x = carat, y = price)) +
+  geom_point() +
+  geom_smooth(method=lm,   # Add linear regression line
+                se=FALSE) +   # Don't add shaded confidence region
+  scale_y_continuous(labels=dollar) + 
+  coord_cartesian(ylim=c(0, 20000)) +
+  xlab("Weight in carat") + ylab("Price")
+```
+```{r}
+ggplot(diamonds, aes(x = clarity, y = price)) +
+  stat_boxplot(geom="errorbar") +
+  geom_boxplot() +
+  coord_cartesian(ylim=c(0, 20000)) +
+  scale_y_continuous(labels=dollar) + 
+  xlab("clarity") + ylab("Price")
+```
+
+```{r}
+ggplot(diamonds, aes(x = depth, y = price)) +
+  geom_point() +
+  geom_smooth(method=lm,   # Add linear regression line
+                se=FALSE) +   # Don't add shaded confidence region
+  scale_y_continuous(labels=dollar) + 
+  coord_cartesian(ylim=c(0, 20000)) +
+  xlab("depth") + ylab("Price")
+```
+The conclusion of the plots above is, that the price does correlates very well with the weight and the color. On the other hand it does not correlate at all with the size (depth) and the clarity.  
+```{r}
+
+```
+
+# 2.
+
+Furthermore we want to know, how the Price correlates with the cut.
+
+```{r}
+
+ggplot(diamonds, aes(x = cut, y = price)) +
+  stat_boxplot(geom="errorbar") +
+  geom_boxplot() +
+  coord_cartesian(ylim=c(0, 20000)) +
+  scale_y_continuous(labels=dollar) + 
+  xlab("Cut") + ylab("Price")
+```
+This shows quite easaly, that the Premium cut in average has a much higher price than an ideal cutted diamond.
+
+Lets have a look at some numbers:
+```{r}
+
+diamonds %>%
+  group_by(cut) %>%
+  summarise(max_price = max(price),
+            min_price = min(price),
+            median_price = median(price))
+```
+The maximum price of each cut category is very similar,as well as the minimum price. This is due to the fact, that we look at comlete diamonds here, which price depends most on size. So even if the cut is ideal, if it is a very small diamond it still will be cheap. To see the real effect of the shape on the price we need to use a new category: price/carat.
+```{r}
+ggplot(diamonds, aes(x = cut, y = price/carat)) +
+  stat_boxplot(geom="errorbar") +
+  geom_boxplot() +
+  coord_cartesian(ylim=c(0, 20000)) +
+  scale_y_continuous(labels=dollar) + 
+  xlab("Cut") + ylab("Price per Carat")
+```
+```{r}
+diamonds %>%
+  group_by(cut) %>%
+  summarise(max_price_per_carat = max(price/carat),
+            min_price_per_carat = min(price/carat),
+            median_price_per_carat = median(price/carat))
+```
+
+Now we can see, that a fair cut drives down the maximum price you can get, but better than very good does not really makes a huge difference on th price. In fact the Very Good cut category has not only the highest priced diamond, but as well higher median, than the Ideal cutted diamonds. 
