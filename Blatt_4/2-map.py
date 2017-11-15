@@ -7,10 +7,10 @@ stemmer = SnowballStemmer("english")
 wordnet_lemmatizer = WordNetLemmatizer()
 
 
-def getvalueByIndex(index:int,value:str):
+def getvalueByIndex(results,index:int,value:str):
     return results[value][results["ID"].index(index)]
 
-def getContentByValue(index:int,value:str):
+def getContentByValue(results,index:int,value:str):
     return results["content"][value][results["ID"].index(index)]
 
 def cleanText(text:str):
@@ -20,14 +20,14 @@ def cleanText(text:str):
 def stemWord(word:str):
     stemmed = stemmer.stem(word)
     if (len(stemmed) > 2) or (stemmed == "a") or (stemmed == "i"):
-        return stemmed
+        return stemmed.lower()
     else:
         return 's'
 
 def lemmatizeWord(word:str):
     lemmed = wordnet_lemmatizer.lemmatize(word)
     if (len(lemmed) > 2) or (lemmed == "a") or (lemmed == "i"):
-        return lemmed
+        return lemmed.lower()
     else:
         return 's'
 
@@ -38,10 +38,11 @@ def countWords(word_list):
 def quoteMe(str):
     return '"' + str + '"'
 
-if __name__ == "__main__":
+
+def main():
     PATH = "/home/mpim/m300517/Downloads/"
-    FILE = "enwiki-clean_short.csv"
-    # FILE = "enwiki-clean.csv"
+    # FILE = "enwiki-clean_short.csv"
+    FILE = "enwiki-clean.csv"
 
     EOF = False # End of File
 
@@ -49,18 +50,15 @@ if __name__ == "__main__":
     with open(PATH + FILE, "r") as f:
         while not EOF:
             try:
-
                 content = {"lemma": [],
                            "stemm": []
                            }
-
                 results = {"ID": [],
                            "link": [],
                            "content": content,
                            "topics": [],
                            "title":[]
                            }
-
                 line = f.readline().rstrip()
                 # print(line)
                 comma_split = line.split(",")
@@ -73,7 +71,7 @@ if __name__ == "__main__":
                 results["topics"].append(topic_list)
 
                 # Find text:
-                text = " ".join(comma_split[2:])
+                text = " ".join(comma_split[3:])
                 text = " ".join(text.split("[")[:-1])
                 text = text.replace('"','')
 
@@ -104,7 +102,6 @@ if __name__ == "__main__":
                                quoteMe("[" + lemma_str + "]")
                 print(print_string)
 
-
             except:
                 # print(line)
                 error_counter += 1
@@ -112,4 +109,9 @@ if __name__ == "__main__":
                     continue
                 else:
                     break
+
+
+
+if __name__ == "__main__":
+    main()
 
