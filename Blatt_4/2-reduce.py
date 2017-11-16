@@ -2,6 +2,7 @@
 import sys
 import re
 import os
+import atexit
 
 def getInputbyFile():
     FILE = "example.txt"
@@ -61,6 +62,18 @@ def main():
                 else:
                     f.write(word + "," + count + "\n")
 
+    atexit.register(panic_function, file,WRITE_PATH+WRITE_FILE)
+
+def panic_function(file,writefile):
+    print("Called panic function!")
+    with open(writefile,"w") as f:
+        f.write(file)
+
+    print("wrote out results.")
+
+
+
 
 if __name__ == "__main__":
     main()
+
