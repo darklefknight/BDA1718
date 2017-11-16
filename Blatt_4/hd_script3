@@ -1,0 +1,3 @@
+yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming.jar \
+-Dmapred.reduce.tasks=1 -Dmapred.map.tasks=11 -mapper /home/gux/BDA1718/Blatt_4/3-mapper.py -reducer /home/gux/BDA1718/Blatt_4/3-reducer.py \
+-input /user/gux/in3 -output /user/gux/out
