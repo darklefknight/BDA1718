@@ -34,26 +34,10 @@ def main():
         else: # if we are not in the same test-case anymore, write out the results:
             means = [str(x) for x in means]
             means = ",".join(means)
-            # writeToFile(apps, means)
             print(apps,means)
             means = counts
             line_counter = 1
             last_apps = apps
-
-
-def writeToFile(app_str,mean_str):
-    """
-    This function just writes out the results, one at a time
-    :param app_str: string of the test-case (e.g.: ntc,ntc,ntc,ntc)
-    :param mean_str: string containing the mean of each column
-    """
-    write_path = ""
-    write_file = "energy-efficiency-counts.csv"
-    print(app_str)
-    with open(write_path + write_file, "a") as f:
-        f.write(app_str + " " + mean_str + "\n")
-
-
 
 if __name__ == "__main__":
     main()
