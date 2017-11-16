@@ -17,9 +17,7 @@ def getInput():
     """
     pass
 
-
-if __name__ == "__main__":
-
+def main():
     WRITE_PATH = ""
     WRITE_FILE = "wiki-clean-frequency.csv"
     if os.path.isfile(WRITE_PATH+WRITE_FILE):
@@ -30,8 +28,8 @@ if __name__ == "__main__":
         f.close()
 
     with open(WRITE_PATH + WRITE_FILE, "w+") as f:
-        lines = getInputbyFile() #TODO: get the Input from map-function with hadoop
-        for line in lines:
+        # lines = getInputbyFile() #TODO: get the Input from map-function with hadoop
+        for line in sys.stdin:
             stemmed_words = re.findall(r'"(.*?)"', line)[2]
             stemmed_words = stemmed_words.replace("stemmed", "").replace(" ","")
             stemmed_list = stemmed_words[1:-1].split(",")
@@ -62,8 +60,6 @@ if __name__ == "__main__":
                 else:
                     f.write(word + "," + count + "\n")
 
-            f.seek(0)
 
-
-
-
+if __name__ == "__main__":
+    main()
