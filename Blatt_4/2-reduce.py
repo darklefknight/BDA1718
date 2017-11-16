@@ -24,7 +24,7 @@ def getInputbyFile():
 
 def main():
     file = "\n"
-    for line in sys.stdin:
+    for line in getInputbyFile():
         # I decided on counting the stemmed words in all articles
         stemmed_words = re.findall(r'"(.*?)"', line)[2]
         stemmed_words = stemmed_words.replace("stemmed", "").replace(" ","")
@@ -48,7 +48,7 @@ def main():
                 count_str = str(new_count)
                 file = file.replace(act_word+",%i"%act_count,act_word+",%i"%new_count) #replace old result with new one
             else:
-                file.append(word + "," + count + "\n") # if the word wasnt yet in the file just append it
+                file += word + "," + count + "\n" # if the word wasnt yet in the file just append it
     print(file)
     return file
 
