@@ -26,7 +26,7 @@ def getInputbyFile():
 
 
 def main():
-    WRITE_PATH = ""
+    WRITE_PATH = "hdfs://abu2/user/gux/out/"
     WRITE_FILE = "wiki-clean-frequency.csv"
     if os.path.isfile(WRITE_PATH+WRITE_FILE): # check if file from previous run exists
         print("true")
