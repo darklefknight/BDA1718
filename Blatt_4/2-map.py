@@ -1,4 +1,6 @@
+#!/usr/bin/python3
 import re
+import sys
 from nltk.stem.snowball import SnowballStemmer
 from nltk.stem import WordNetLemmatizer
 from collections import Counter
@@ -40,15 +42,14 @@ def quoteMe(str):
 
 
 def main():
-    PATH = "/home/mpim/m300517/Downloads/"
-    # FILE = "enwiki-clean_short.csv"
-    FILE = "enwiki-clean.csv"
+    PATH = ""
+    FILE = "enwiki-clean_short.csv"
+    # FILE = "enwiki-clean.csv"
 
     EOF = False # End of File
 
     error_counter = 0
-    with open(PATH + FILE, "r") as f:
-        while not EOF:
+    for line in sys.stdin:
             try:
                 content = {"lemma": [],
                            "stemm": []
@@ -59,7 +60,7 @@ def main():
                            "topics": [],
                            "title":[]
                            }
-                line = f.readline().rstrip()
+                line = line.rstrip()
                 # print(line)
                 comma_split = line.split(",")
                 results["ID"].append(int(comma_split[0]))
@@ -69,26 +70,28 @@ def main():
                 klammer_split = line.split("[")
                 topic_list = re.findall(r"'(.*?)'", klammer_split[-1])
                 results["topics"].append(topic_list)
-
+		
                 # Find text:
                 text = " ".join(comma_split[3:])
                 text = " ".join(text.split("[")[:-1])
                 text = text.replace('"','')
 
                 text = cleanText(text)
-
+                
                 wordlist = text.split(" ")
 
                 stemmed_list = [stemWord(word) for word in wordlist]
                 count_stemmed = countWords(stemmed_list)
                 del count_stemmed["s"]
                 results["content"]["stemm"].append(count_stemmed)
-
+                
                 lemmed_list = [lemmatizeWord(word) for word in wordlist]
+                
                 count_lemmed = countWords(lemmed_list)
                 del count_lemmed["s"]
+                
                 results["content"]["lemma"].append(count_lemmed)
-
+                
                 stemm_str = ([("stemmed " + str(x) + ":" +str(y)) for (x,y) in results["content"]["stemm"][0].items()])
                 stemm_str = ", ".join(stemm_str)
 
