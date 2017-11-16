@@ -65,8 +65,9 @@ def main():
     return file
 
 
-def panic_function(file,writefile):
+def panic_function(file):
     print("Called panic function!")
+    writefile = "tmp_save.csv"
     with open(writefile,"w") as f:
         f.write(file)
 
@@ -77,5 +78,5 @@ def panic_function(file,writefile):
 
 if __name__ == "__main__":
     file = main()
-    atexit.register(panic_function, file, WRITE_PATH + WRITE_FILE)
+    atexit.register(panic_function, file)
 
