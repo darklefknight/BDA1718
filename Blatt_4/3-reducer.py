@@ -1,4 +1,4 @@
-#!/sw/jessie-x64/anaconda3-4.1.1/bin/python3
+#!/usr/bin/python3
 
 import sys
 import numpy as np
