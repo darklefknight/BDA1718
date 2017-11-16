@@ -34,7 +34,8 @@ def main():
         else: # if we are not in the same test-case anymore, write out the results:
             means = [str(x) for x in means]
             means = ",".join(means)
-            writeToFile(apps, means)
+            # writeToFile(apps, means)
+            print(apps,means)
             means = counts
             line_counter = 1
             last_apps = apps
