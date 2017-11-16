@@ -62,7 +62,8 @@ def main():
                 else:
                     f.write(word + "," + count + "\n")
 
-    atexit.register(panic_function, file,WRITE_PATH+WRITE_FILE)
+    return file
+
 
 def panic_function(file,writefile):
     print("Called panic function!")
@@ -75,5 +76,6 @@ def panic_function(file,writefile):
 
 
 if __name__ == "__main__":
-    main()
+    file = main()
+    atexit.register(panic_function, file, WRITE_PATH + WRITE_FILE)
 
