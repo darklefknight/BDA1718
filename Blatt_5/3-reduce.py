@@ -39,7 +39,7 @@ def printOut(loc,wet):
         if float(loc.lon) > 180:
             lon = str(float(loc.lon) -360)
 
-        result_str = name + "," + lat + "," + lon + "," + wet[2] + "," + wet[3] + "," + wet[0] + "," + wet[1]
+        result_str = name + "," + lat + "," + lon + "," + wet[2] + "," + wet[3]
         print(result_str)
 
 if __name__ == "__main__":
