@@ -43,6 +43,7 @@ def printOut(loc,wet):
         print(result_str)
 
 if __name__ == "__main__":
+    print("place,lat,lon,temperature,precipitation")
     location_list = []
     for line in sys.stdin:
         try: # if an empty line occurs, continue
