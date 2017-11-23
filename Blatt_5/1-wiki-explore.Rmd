@@ -1,0 +1,117 @@
+---
+title: "Exploration of Wikipedia Data"
+author: "Tobias Machnitzki and Finn Burgemeister"
+date: "24 November 2017"
+documentclass: article
+geometry: margin=1cm
+output: 
+  pdf_document: default
+  html_document: 
+    df_print: paged
+classoption: a4paper
+---
+
+```{r}
+library(knitr)
+library(markdown)
+library(scales)
+library(ggplot2)
+```
+
+
+
+# 1. Read Dataset
+
+```{r}
+
+fin = file("../../WORK/Blatt5/enwiki-clean-10MiB.csv", "r")
+
+i=1
+
+# Vectors for analysis
+lengthArticle = NULL
+meanLengthSentence = NULL
+minLengthSentence = NULL
+maxLengthSentence = NULL
+
+
+
+while(TRUE){
+  #########################
+  # Read file line per line
+  line = readLines(fin, n = 1)
+  
+  if(length(line) == 0){
+    break
+  }
+  
+  
+  #########################
+  # Process data
+  data = read.csv(con <- textConnection(line), header=FALSE)
+  
+  oneID = data[[1]]
+  oneAdress = data[[2]]
+  oneTitle = data[[3]]
+  oneArticle = data[[4]]
+  oneCategories = data[[5]]
+  
+  
+  #########################
+  # Break for testing
+  #if(i == 6){break}
+  
+  
+  #########################
+  # Exploration of one article 
+  lengthArticle[i] = sapply(gregexpr("\\w+", oneArticle), length)
+  
+  numberSentences = sapply(gregexpr('[[:alnum:] ][.!?]', oneArticle), length)
+  
+  Sentences = strsplit(toString(oneArticle), split="[\\.!?]+")
+  lengthSentences = lapply(gregexpr("\\w+", Sentences[[1]]), length)
+  meanLengthSentence[i] = mean(unlist(lengthSentences))
+  minLengthSentence[i] = min(unlist(lengthSentences))
+  maxLengthSentence[i] = max(unlist(lengthSentences))
+
+  #########################
+  # End of while, do not modify
+  i = i+1  
+}
+
+close(fin)
+
+
+dat = data.frame(lengthArticle, meanLengthSentence)
+print("Correlation")
+print(cor(dat))
+
+```
+
+\newpage
+# 2 Plot Correlation of article length with the mean length of sentences within the article
+
+```{r}
+
+#########################
+# Scatter Plot with regression
+ggplot(dat, aes(lengthArticle, meanLengthSentence)) +    
+  geom_point(shape=1) +  
+  geom_smooth(method=lm , color="red", se=FALSE)  # Add linear regression line 
+```
+\newpage
+# 3 Density Plot
+```{r}
+
+#########################
+# Density Plot
+ggplot(dat, aes(lengthArticle)) + 
+  geom_density(alpha=0.55) +
+  xlim(0, 3000)
+```
+\newpage
+# 4 ... time reason
+
+
+
+```
