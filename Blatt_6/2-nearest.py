@@ -40,7 +40,7 @@ def getPSQLatLoc(cur,lat,lon,distance,closest_n):
 if __name__ == "__main__":
     in_text = "Please enter your position. First latitude then longitude,seperated by comma. \n Example: 52.025,10.113 \n"
 
-    lat,lon = tuple(int(x.strip()) for x in input(in_text).split(','))
+    lat,lon = tuple(float(x.strip()) for x in input(in_text).split(','))
 
     results = input("How many results do you want to get?\n")
     conn = psycopg2.connect("dbname=postgis")
