@@ -38,10 +38,12 @@ def getPSQLatLoc(cur,lat,lon,distance,closest_n):
     return sorted(dist_list)[:closest_n]
 
 if __name__ == "__main__":
+    lat,lon = input("Please enter your position. First latitude then longitude,seperated by comma. \n Example: 52.025,10.113 \n")
+    results = input("How many results do you want to get?\n")
     conn = psycopg2.connect("dbname=postgis")
     cur = conn.cursor()
-    position = (53.1,10)
-    citty_list = getPSQLatLoc(cur,position[0],position[1],0.1,10)
+    position = (lat,lon)
+    citty_list = getPSQLatLoc(cur,position[0],position[1],0.1,results)
 
     cur.close()
     conn.close()
