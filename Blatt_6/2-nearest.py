@@ -33,7 +33,7 @@ def getPSQLatLoc(cur,lat,lon,distance,closest_n):
     dist_list = []
     for element in loc_list:
         dist = getDistance(lat,lon,element[0],element[1])
-        dist_list.append(dist,element[2])
+        dist_list.append((dist,element[2]))
 
     return sorted(dist_list)[:closest_n]
 
