@@ -20,7 +20,7 @@ def distance(lat1,lon1,lat2,lon2):
 
 def getPSQLatLoc(cur,lat,lon,distance,closest_n):
     loc_list = []
-    while len(loc_list) < closest_n:
+    while len(loc_list) < closest_n+100:
         lat_low = lat - distance
         lat_high = lat + distance
         lon_low = lon - distance
@@ -28,19 +28,23 @@ def getPSQLatLoc(cur,lat,lon,distance,closest_n):
 
         cur.execute('SELECT lat,lon,"Titel" FROM wp_coords_red0 WHERE lat BETWEEN {0} AND {1} AND lon BETWEEN {2} AND {3}'.format(lat_low,lat_high,lon_low,lon_high))
         loc_list = cur.fetchall()
-        distance +=0.01
+        distance +=0.1
 
+    dist_list = []
+    for element in loc_list:
+        dist = distance(lat,lon,element[0],element[1])
+        dist_list.append(dist,element[2])
 
-    return loc_list
+    return sorted(dist_list)[:closest_n]
 
 if __name__ == "__main__":
     conn = psycopg2.connect("dbname=postgis")
     cur = conn.cursor()
     position = (53.1,10)
-    citty_list = getPSQLatLoc(cur,position[0],position[1],0.01,10)
+    citty_list = getPSQLatLoc(cur,position[0],position[1],0.1,10)
 
     cur.close()
     conn.close()
+    print("Distance [m]   |   Place of interest")
     for tuple in citty_list:
-        dist = distance(position[0],position[1],tuple[0],tuple[1])
-        print("%7.4f | %s"%(dist,tuple[2]) )
+        print("%7.4f     |    %s"%(tuple[0],tuple[1]) )
