@@ -13,7 +13,7 @@ def getPSQLatLoc(cur,lat,lon,distance):
 if __name__ == "__main__":
     conn = psycopg2.connect("dbname=postgis")
     cur = conn.cursor()
-    citty_list = getPSQLatLoc(cur,53.5,9.9,0.01)
+    citty_list = getPSQLatLoc(cur,52.1,10,0.1)
 
     cur.close()
     conn.close()
