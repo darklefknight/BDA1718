@@ -47,4 +47,4 @@ if __name__ == "__main__":
     conn.close()
     print("Distance [m]   |   Place of interest")
     for tuple in citty_list:
-        print("%7.4f     |    %s"%(tuple[0],tuple[1]) )
+        print("%09.5f     |    %s"%(tuple[0],tuple[1]) )
