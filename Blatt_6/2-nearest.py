@@ -2,6 +2,7 @@ import psycopg2
 
 
 def getPSQLatLoc(cur,lat,lon,distance,closest_n):
+    loc_list = []
     while len(loc_list) < closest_n:
         lat_low = lat - distance
         lat_high = lat + distance
