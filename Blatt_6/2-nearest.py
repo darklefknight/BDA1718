@@ -38,7 +38,10 @@ def getPSQLatLoc(cur,lat,lon,distance,closest_n):
     return sorted(dist_list)[:closest_n]
 
 if __name__ == "__main__":
-    lat,lon = input("Please enter your position. First latitude then longitude,seperated by comma. \n Example: 52.025,10.113 \n")
+    in_text = "Please enter your position. First latitude then longitude,seperated by comma. \n Example: 52.025,10.113 \n"
+
+    lat,lon = tuple(int(x.strip()) for x in input(in_text).split(','))
+
     results = input("How many results do you want to get?\n")
     conn = psycopg2.connect("dbname=postgis")
     cur = conn.cursor()
