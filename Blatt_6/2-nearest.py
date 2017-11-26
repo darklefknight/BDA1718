@@ -6,7 +6,7 @@ def getPSQLatLoc(cur,lat,lon,distance):
     lat_high = lat + distance
     lon_low = lon - distance
     lon_high = lon + distance
-    cur.execute("SELECT lat,lon FROM wp_coords_red0 WHERE {0}<lat AND lat<{1} AND {2}<lon AND lon<{3}".format(lat_low,lat_high,lon_low,lon_high))
+    cur.execute("SELECT 'Titel' FROM wp_coords_red0 WHERE {0}<lat AND lat<{1} AND {2}<lon AND lon<{3}".format(lat_low,lat_high,lon_low,lon_high))
     loc_list = cur.fetchall()
     return loc_list
 
