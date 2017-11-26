@@ -17,4 +17,5 @@ if __name__ == "__main__":
 
     cur.close()
     conn.close()
-    print(citty_list)
+    for tuple in citty_list:
+        print("%7.4f | %7.4f | %s"%(tuple[0],tuple[1],tuple[2]) )
