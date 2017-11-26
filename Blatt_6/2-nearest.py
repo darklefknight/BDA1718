@@ -1,3 +1,16 @@
+#!/user/bin/python3
+
+"""
+This programm prints out the n closest points of interest for a user input.
+
+The way it is done might not be the fastest or nicest, but since this should be a one hour task and it works it should
+be sufficient.
+
+In general what could be done better is the way the data is retrieved from the database. We get more data than we need
+and afterwards deciding what we need from that.
+
+By Finn Burgemeister and Tobias Machnitzki
+"""
 import psycopg2
 import numpy as np
 
@@ -19,6 +32,10 @@ def getDistance(lat1,lon1,lat2,lon2):
     return d
 
 def getPSQLatLoc(cur,lat,lon,distance,closest_n):
+    """
+    Gets a list of Titels around a location via psql. Afterwards reducing this list to "closest_n" elements.
+    The result will be the closest_n elements to the entered location.
+    """
     loc_list = []
     while len(loc_list) < closest_n+100:
         lat_low = lat - distance
@@ -38,18 +55,24 @@ def getPSQLatLoc(cur,lat,lon,distance,closest_n):
     return sorted(dist_list)[:closest_n]
 
 if __name__ == "__main__":
+    # Gettin the User input:
     in_text = "Please enter your position. First latitude then longitude,seperated by comma. \n Example: 52.025,10.113 \n"
-
     lat,lon = tuple(float(x.strip()) for x in input(in_text).split(','))
-    print(type(lat),lon)
     results = int(input("How many results do you want to get?\n"))
+    position = (lat,lon)
+
+    #creating psql connection:
     conn = psycopg2.connect("dbname=postgis")
     cur = conn.cursor()
-    position = (lat,lon)
+
+    # from user input get closest elements:
     citty_list = getPSQLatLoc(cur,position[0],position[1],0.1,results)
 
+    #close connection:
     cur.close()
     conn.close()
+
+    # output results:
     print("Distance [m]   |   Place of interest")
     for tuple in citty_list:
         print("%09.5f     |    %s"%(tuple[0],tuple[1]) )
