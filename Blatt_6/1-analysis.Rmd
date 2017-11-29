@@ -1,0 +1,97 @@
+---
+title: "Exploration of NetCDF Data"
+author: "Tobias Machnitzki and Finn Burgemeister"
+date: "01 Dezember 2017"
+documentclass: article
+geometry: margin=1cm
+output: 
+  pdf_document: default
+  html_document: 
+    df_print: paged
+classoption: a4paper
+---
+
+```{r}
+library(knitr)
+library(markdown)
+library(ncdf4)
+library(ggplot2)
+```
+
+# 1 Import Data
+
+```{r}
+ncfname = "../../WORK/Blatt6/weather-full.nc"
+
+ncin = nc_open(ncfname)
+print(ncin)
+
+t2m = ncvar_get(ncin,"t2m")
+lon = ncvar_get(ncin,"longitude")
+lat = ncvar_get(ncin,"latitude")
+time = ncvar_get(ncin,"time")
+
+nc_close(ncin)
+```
+
+# 2 Limits of data
+
+The file weather-nc-full contains datasets of three years: 1979, 1996, 2014 with daily data availiability.
+```{r}
+timestamp = as.POSIXct("1900-01-01 00:00")+as.difftime(time,units="hours")
+
+years = unique(as.integer(format(timestamp, "%Y")))
+
+yearstep_begin = rep(0,3)
+yearstep_end = rep(0,3)
+i = 1
+for(year in years){
+  yearstep_begin[i] = min(which(grepl(year, format(timestamp, "%Y"))))
+  yearstep_end[i] = max(which(grepl(year, format(timestamp, "%Y"))))
+  print(c(timestamp[yearstep_begin[i]], timestamp[yearstep_end[i]]))
+  i = i+1
+}
+
+```
+
+The longitude is subdivided in steps of 0.75 and has the range from 0.00 to 395.25. The latitude is subdivided in steps of 0.75 and has the range from 90.00 to -90.00.
+```{r}
+print(head((lon)))
+print(tail((lon)))
+print(head((lat)))
+print(tail((lat)))
+
+```
+
+# 3 Temperature in Hamburg
+
+```{r}
+lat_HH_true = 53.551086
+lon_HH_true = 9.993682
+
+# "Interpolation nearest value"
+lat_HH = lat[which.min(abs(lat - lat_HH_true))]
+lon_HH = lon[which.min(abs(lon - lon_HH_true))]
+
+#lon_TK = 35.652832
+#lat_TK = 139.839478
+
+library(ggplot2)
+library(dplyr)
+
+data=data.frame(timestamp, t2m[lon_HH, lat_HH, ])
+
+# Split per year, one column per year
+data %>% mutate(pyear = as.Date(cut(timestamp, breaks = "year"))) %>% 
+  ggplot(aes(x=timestamp, y=t2m[lon_HH, lat_HH, ]-273.15)) +
+    geom_line() + 
+    theme(
+        axis.text.x=element_blank(), 
+        axis.ticks.x=element_blank(),
+        strip.background = element_rect(fill=alpha("slateblue",0.2)),
+        strip.placement="bottom"
+        ) +
+    xlab("") + 
+    ylab(expression("Temperature ("*~degree*C*")")) +
+    facet_wrap(~format(as.Date(pyear), "%Y"), scales="free_x", nrow=1)
+```
