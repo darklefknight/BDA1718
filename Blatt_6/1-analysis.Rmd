@@ -16,6 +16,7 @@ library(knitr)
 library(markdown)
 library(ncdf4)
 library(ggplot2)
+library(dplyr)
 ```
 
 # 1 Import Data
@@ -27,12 +28,15 @@ ncin = nc_open(ncfname)
 print(ncin)
 
 t2m = ncvar_get(ncin,"t2m")
+tp = ncvar_get(ncin,"tp")
+sund = ncvar_get(ncin,"sund")
 lon = ncvar_get(ncin,"longitude")
 lat = ncvar_get(ncin,"latitude")
 time = ncvar_get(ncin,"time")
 
 nc_close(ncin)
 ```
+\newpage
 
 # 2 Limits of data
 
@@ -63,8 +67,10 @@ print(tail((lat)))
 
 ```
 
+\newpage
 # 3 Temperature in Hamburg
 
+## 3.1 Short overview about the Temperature data in Hamburg
 ```{r}
 lat_HH_true = 53.551086
 lon_HH_true = 9.993682
@@ -76,15 +82,13 @@ lon_HH = lon[which.min(abs(lon - lon_HH_true))]
 #lon_TK = 35.652832
 #lat_TK = 139.839478
 
-library(ggplot2)
-library(dplyr)
-
 data=data.frame(timestamp, t2m[lon_HH, lat_HH, ])
 
-# Split per year, one column per year
+
 data %>% mutate(pyear = as.Date(cut(timestamp, breaks = "year"))) %>% 
   ggplot(aes(x=timestamp, y=t2m[lon_HH, lat_HH, ]-273.15)) +
     geom_line() + 
+    ggtitle("Hamburg - Annual Cycle of three example years - 2 Metre Temperature") +
     theme(
         axis.text.x=element_blank(), 
         axis.ticks.x=element_blank(),
@@ -92,6 +96,136 @@ data %>% mutate(pyear = as.Date(cut(timestamp, breaks = "year"))) %>%
         strip.placement="bottom"
         ) +
     xlab("") + 
-    ylab(expression("Temperature ("*~degree*C*")")) +
+    ylab(expression("("*~degree*C*")")) +
     facet_wrap(~format(as.Date(pyear), "%Y"), scales="free_x", nrow=1)
+    
+
 ```
+This figure of the timeseries of the 2 m temperature in Hamburg shows only the data and we can see the annual cycle of the temperature. Additionally we gain some information about the range of the temperature in Hamburg and we can see some spikes.
+
+\newpage
+## 3.2 Mean temperature in Hamburg
+```{r}
+data=data.frame(timestamp, t2m[lon_HH, lat_HH, ])
+
+data$year = format(timestamp, "%Y")
+
+ggplot(data) + 
+  geom_boxplot(aes(x=year, y=t2m[lon_HH, lat_HH, ]-273.15)) +
+  ggtitle("Hamburg - Annual Comparison - 2 m Temperature") +
+  xlab("") + 
+  ylab(expression("("*~degree*C*")"))
+
+```
+The comparison of the statistics of the temperature data between the years 1979, 1996 and 2014 shows a increasing mean value. The year 1996 has the greates variation in general but a similar inner quarter range, so only there were more extreme values.
+
+\newpage
+
+# 4 Comparison to Tokio
+```{r}
+lat_TK_true = 139.839478 
+lon_TK_true = 35.652832
+
+# "Interpolation nearest value"
+lat_TK = lat[which.min(abs(lat - lat_TK_true))]
+lon_TK = lon[which.min(abs(lon - lon_TK_true))]
+
+library(reshape2)
+
+data=merge(data.frame(timestamp, t2mHH = t2m[lon_HH, lat_HH, ]), data.frame(timestamp, t2mTK = t2m[lon_TK, lat_TK, ]))
+data$year = format(timestamp, "%Y")
+
+dat_comp = melt(data, id.vars="year", measure.vars=c("t2mHH", "t2mTK"))
+
+ggplot(dat_comp) + 
+  geom_boxplot(aes(x=year, y=value-273.15, fill=variable)) +
+  ggtitle("Hamburg / Tokio - Annual Comparison - 2 m Temperature") +
+  xlab("") + 
+  ylab(expression("("*~degree*C*")"))
+
+```
+Tokio has in comparison with Hamburg a smaller variation. The annual cycle result probably in more variation of the temperature in Hamburg. The clima in Hamburg is obvisouly cold compared to the clima of Tokio.
+
+\newpage
+
+# 5 Correlation between measurements 
+```{r}
+data = data.frame(t2m_HH = t2m[lon_HH, lat_HH, ], sund_HH = sund[lon_HH, lat_HH, ], tp_HH = tp[lon_HH, lat_HH, ])
+
+cor(data)
+
+data$year = format(timestamp, "%Y")
+
+ggplot(data, aes(t2m_HH-273.15, sund_HH / 3600., color=year)) + 
+  geom_point(shape=1) +
+  geom_smooth(method=lm , color="black", se=FALSE) +
+  geom_rug(col="black",alpha=0.1, size=1.5) +
+  ggtitle("Hamburg - Correlation 2 m Temperature with Sunshine duration") +
+  xlab(expression("("*~degree*C*")")) +
+  ylab("(h)")
+
+ggplot(data, aes(t2m_HH-273.15, tp_HH*1000, color=year)) + 
+  geom_point(shape=1) +
+  geom_smooth(method=lm , color="black", se=FALSE) +
+  geom_rug(col="black",alpha=0.1, size=1.5) +
+  ggtitle("Hamburg - Correlation 2 m Temperature with total Precipitation") +
+  xlab(expression("("*~degree*C*")")) +
+  ylab("(mm)")
+
+ggplot(data, aes(sund_HH /3600., tp_HH*1000, color=year)) + 
+  geom_point(shape=1) +
+  geom_smooth(method=lm , color="black", se=FALSE) +
+  geom_rug(col="black",alpha=0.1, size=1.5) +
+  ggtitle("Hamburg - Correlation Sunshine duration with total Precipitation") +
+  xlab("(h)") +
+  ylab("(mm)")
+
+```
+As expectet there is a good correlation between the sunshine duration and the temperature in 2 m, because the radiation of the sun results direct in the heating of the air near to the ground.   
+
+\newpage
+
+# 6 Difference between time values 
+```{r}
+offset = 1
+
+sund_HH_tdiff = matrix(ncol = 2, nrow = (length(sund[lon_HH, lat_HH, ])-length(years)*2*offset))
+t2m_HH_tdiff = matrix(ncol = 2, nrow = (length(t2m[lon_HH, lat_HH, ])-length(years)*2*offset))
+
+iter = 1
+for(iyear in c(1,2,3)){
+  time_it = yearstep_begin[iyear] + offset  
+  
+  while(time_it < (yearstep_end[iyear] - offset)){
+    sund_HH_tdiff[iter,1] = sund[lon_HH, lat_HH, time_it] - sund[lon_HH, lat_HH, time_it-1]
+    t2m_HH_tdiff[iter,1] = t2m[lon_HH, lat_HH, time_it] - t2m[lon_HH, lat_HH, time_it-1]
+    sund_HH_tdiff[iter,2] = sund[lon_HH, lat_HH, time_it] - sund[lon_HH, lat_HH, time_it+1]
+    t2m_HH_tdiff[iter,2] = t2m[lon_HH, lat_HH, time_it] - t2m[lon_HH, lat_HH, time_it+1]
+    time_it = time_it+1
+    iter = iter + 1
+  }
+   
+
+}
+
+data = data.frame(prevDay=sund_HH_tdiff[,1], nextDay=sund_HH_tdiff[,2])
+
+dat_comp = melt(data, measure.vars=c("prevDay", "nextDay"))
+
+ggplot(dat_comp, aes(value/3600, fill=variable)) +
+  geom_density(alpha=0.3) +
+  xlab("delta time (h)") +
+  ggtitle("Hamburg - Variation of Sunshine duration with one day delay")
+
+
+data = data.frame(prevDay=t2m_HH_tdiff[,1], nextDay=t2m_HH_tdiff[,2])
+
+dat_comp = melt(data, measure.vars=c("prevDay", "nextDay"))
+
+ggplot(dat_comp, aes(value, fill=variable)) +
+  geom_density(alpha=0.3) +
+  xlab("delta (K)") +
+  ggtitle("Hamburg - Variation of 2 m Temperature with one day delay")
+
+```
+
