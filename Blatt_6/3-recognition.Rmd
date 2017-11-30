@@ -1,0 +1,51 @@
+---
+title: "Task 3 - recognition"
+author: "Tobias Machnitzki, Finn Burgemeister"
+date: "26 November 2017"
+output: pdf_document
+---
+
+# NR1: a linear model
+```{r setup}
+library(softmaxreg)
+library(ggplot2)
+x = load_image_file("train-images-idx3-ubyte")
+y = load_label_file("train-labels-idx1-ubyte")
+image(matrix(x[200,], nrow=28), col=grey(seq(0, 1, length = 256)))
+```
+
+```{r}
+m = lm(y~x)
+df = data.frame(x)
+pr = predict(m,df)
+
+x_axis = seq(1,length(pr[1:100]))
+
+```
+
+
+```{r}
+plot(x=x_axis,y=y[1:100],type="l")
+lines(x=x_axis,y=pr[1:100])
+```
+
+What I find really suspicious is, that the 7 never gets mistaken for a 1 and vice versa.
+I probably set up the model not right...
+
+#NR2 A classification tree
+
+```{r}
+library(rpart)
+
+# grow tree
+fit = rpart(y ~ x,method="class")
+plotcp(fit)
+
+```
+
+```{r}
+plot(fit, uniform=TRUE,
+   main="Classification Tree for MNIST Data")
+text(fit, use.n=TRUE, all=TRUE, cex=.8)
+```
+
