@@ -15,7 +15,6 @@ library(markdown)
 data(diamonds)
 summary(diamonds)
 
-
 ```
 
 The first thing we notice is that cut, color and clarity do not contain numbers for evaluation, but some kind of tags.
