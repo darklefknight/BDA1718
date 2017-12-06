@@ -1,3 +1,4 @@
+DROP TABLE bu_wiki;
 CREATE EXTERNAL TABLE bu_wiki(text STRING)
 LOCATION "/user/gux/7";
 
