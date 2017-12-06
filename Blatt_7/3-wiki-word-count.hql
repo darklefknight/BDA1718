@@ -1,5 +1,5 @@
 CREATE EXTERNAL TABLE IF NOT EXISTS bu_wiki(text STRING)
-LOCATION "/user/gux/7/enwiki-clean.csv";
+LOCATION "/user/gux/7";
 
 SELECT word, count(*) FROM bu_wiki LATERAL
 VIEW explode(split(lower(text), '\\w+')) t1 as word
