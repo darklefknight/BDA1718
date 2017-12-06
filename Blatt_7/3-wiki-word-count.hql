@@ -3,4 +3,4 @@ LOCATION "/user/bigdata/7/enwiki-clean.csv";
 
 SELECT word, count(*) FROM bu_wiki LATERAL
 VIEW explode(split(lower(text), '\\w+')) t1 as word
-GROUP BY word;
+GROUP BY word LIMIT 1000;
