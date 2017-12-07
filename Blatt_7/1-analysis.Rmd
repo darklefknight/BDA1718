@@ -1,0 +1,86 @@
+---
+title: "Exploration of IMDB Quotes"
+author: "Tobias Machnitzki, Finn Burgemeister"
+date: "5 Dezember 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+```{r}
+library(ggplot2)
+DATAPATH = "C:/Users/darkl/Dropbox/Transfer1/" 
+DATAPATH = paste(DATAPATH, "imdb-quotes.csv", sep="")
+d = read.csv(DATAPATH, header=F, stringsAsFactors=F, sep="|", quote="\"")
+colnames(d) = c("movie", "year", "episode", "actors", "quote")
+
+# data cleaning
+d$year = as.numeric(d$year)
+d = d[d$year > 1800 & d$year < 2020 & ! is.na(d$year),]
+```
+First have a look at what we've got:
+
+```{r}
+summary(d)
+```
+
+Calculate the number of acters for each movie:
+```{r}
+numOfActors = rep(777,length(d$actors))
+for (i in c(0:length(d$actors))){
+numOfActors[i] = length(unlist(strsplit(d$actors[i],",")))
+}
+
+qplot(numOfActors,geom="histogram",binwidth=1)
+```
+There seem to be some outliers on the very right side, lets try to visualize them:
+
+```{r}
+qplot(numOfActors,geom="histogram", log="y",binwidth=1)
+```
+So the huge majority of quotes have 2 to 3 actors involved.
+
+
+Lets Calculate the number of words in each quote:
+```{r}
+lengthOfQuote = rep(777,length(d$quote))
+for (i in c(0:length(d$quote))){
+lengthOfQuote[i] = unlist(sapply(gregexpr("\\w+", d$quote[i]), length))
+}
+lengthOfQuote = data.frame(lengthOfQuote)
+
+qplot(lengthOfQuote,geom="histogram",log="y",binwidth=100)
+```
+So how do the length correlate with the number of actors?
+
+```{r}
+r = cor(numOfActors,lengthOfQuote)
+qplot(numOfActors,lengthOfQuote,geom="point")
+```
+So actually the length of the article has nothing to do with the number of actors taking part.
+```{r}
+summary(lengthOfQuote)
+```
+
+So most quotes have about 31 words but the longest quote seems to be a monologue.
+```{r}
+
+quoteWord = character(length(d$quote))
+wordOccurences = rep(777,length(d$quote))
+for (i in c(0:length(d))){
+  quote_length = 0
+  for (word in strsplit(d$movie[i], " ")){
+    act_length = length(grep(word,strsplit(d$quote[i], " ")))
+    if (act_length > quote_length) {
+      quote_length = act_length
+      act_word = word
+    }
+    quoteWord[i] = word 
+    wordOccurences[i] = quote_length
+  }
+}
+```
+
