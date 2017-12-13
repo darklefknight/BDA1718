@@ -1,0 +1,10 @@
+CREATE (A1:Article{title:'Article_1'}), (A2:Article{title:'Article_2'}),(A3:Article{title:'Article_3'}),
+(T1:text{content:'text1'}),(T2:text{content:'text2'}),(T3:text{content:'text3'}),(D1:date{datestr:'01.01.2017'}),
+(D2:date{datestr:'02.01.2017'}),(D3:date{datestr:'03.01.2017'}),
+(A1)-[:CONTAINS]->(T1),(A1)-[:WAS_CHANGED]->(D1),(A2)-[:CONTAINS]->(T2),(A2)-[:WAS_CHANGED]->(D2),
+(A3)-[:CONTAINS]->(T3),(A3)-[:WAS_CHANGED]->(D3),(A1)-[:links]->(A2),(A2)-[:links]->(A3),(A2)-[:links]->(A1)
+
+CREATE (at1:author{name:'Henry', mail:'henry@bestauthors.com'}),
+(at2:author{name:'Holger', mail:'holger@crapauthors.com'}),
+
+(at1)-[:WROTE]->(A1),(at1)-[:WROTE]->(A2),(at2)-[:WROTE]->(A3)
