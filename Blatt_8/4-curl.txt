@@ -1,0 +1,32 @@
+# Listing of directory
+> curl -i "http://abu2:50070/webhdfs/v1/user/burgemeister/?op=LISTSTATUS"
+
+HTTP/1.1 200 OK
+Cache-Control: no-cache
+Expires: Wed, 13 Dec 2017 15:33:57 GMT
+Date: Wed, 13 Dec 2017 15:33:57 GMT
+Pragma: no-cache
+Expires: Wed, 13 Dec 2017 15:33:57 GMT
+Date: Wed, 13 Dec 2017 15:33:57 GMT
+Pragma: no-cache
+Content-Type: application/json
+X-FRAME-OPTIONS: SAMEORIGIN
+Transfer-Encoding: chunked
+Server: Jetty(6.1.26.hwx)
+
+{"FileStatuses":{"FileStatus":[
+{"accessTime":0,"blockSize":0,"childrenNum":1,"fileId":2024535,"group":"hdfs","length":0,"modificationTime":1512482473213,"owner":"burgemeister","pathSuffix":".hiveJars","permission":"755","replication":0,"storagePolicy":0,"type":"DIRECTORY"}
+]}}
+
+# Creation of an file
+> curl -i -X PUT "http://abu2:50070/webhdfs/v1/user/burgemeister/?op=CREATE&user.name=burgemeister"
+
+> curl -i -X PUT "http://abu2:50070/webhdfs/v1/user/burgemeister/?op=CREATE&user.name=burgemeister" -d "@test.txt"
+
+
+# Creating a directory
+curl -i -X PUT "http://abu2:50070/webhdfs/v1/user/burgemeister/?op=MKDIRS&user.name=burgemeister"
+
+# Renaming a directory
+curl -i -X PUT "http://abu2:50070/webhdfs/v1/user/burgemeister/testpath?op=RENAME&destination=/user/burgemeister/test&user.name=burgemeister"
+
