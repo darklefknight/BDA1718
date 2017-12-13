@@ -1,0 +1,14 @@
+1. Return all articles linked to Artificial_intelligence:
+
+MATCH (n)-[l:links]->(m:Article {title:'Artificial_intelligence'})
+RETURN n
+
+
+
+2. Find the shortest path between Alen_Turing and Gene_Amdhal:
+
+MATCH sp=shortestPath((n:Article{title:'Alan_Turing'})-[*]->(m:Article{title:'Gene_Amdahl'}))
+RETURN sp
+
+
+3:
