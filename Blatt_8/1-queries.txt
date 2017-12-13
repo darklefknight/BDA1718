@@ -11,4 +11,15 @@ MATCH sp=shortestPath((n:Article{title:'Alan_Turing'})-[*]->(m:Article{title:'Ge
 RETURN sp
 
 
-3:
+3. How many articles are there?
+
+MATCH (n:Article) return count(n)
+
+
+4. What is the strongest connected article?
+
+MATCH (n:Article)
+WITH n, SIZE(()-[l:links]-(n)) as a_count
+ORDER BY a_count DESC LIMIT 10
+MATCH (m)-[:links]-(n)
+RETURN n,m
