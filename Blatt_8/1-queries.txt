@@ -11,6 +11,9 @@ MATCH sp=shortestPath((n:Article{title:'Alan_Turing'})-[*]->(m:Article{title:'Ge
 RETURN sp
 
 
+
+The following 2 tasks are just theoretically as I could not manage to get a stable connection to neo4j anymore:
+
 3. How many articles are there?
 
 MATCH (n:Article) return count(n)
