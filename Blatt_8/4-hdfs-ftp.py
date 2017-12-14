@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
+
+# use it on cluster otherwise you need password...
+
 import requests
 
 def read_test():
     # reading
     ## via url
-    url = 'http://10.0.0.61:50070/webhdfs/v1/user/gresens/data?op=OPEN'
+    # curl -i -L "http://abu2:50070/webhdfs/v1/user/burgemeister/test.txt?op=OPEN&user.name=burgemeister"
+    print("S1")
+    url = 'http://10.0.0.62:50070/webhdfs/v1/user/burgemeister/test.txt?op=OPEN'
     r = requests.get(url)
+    print("S2")
     print(r)
     print(r.text)
 
