@@ -1,44 +1,72 @@
 import re
+import numpy as np
 
-def cleanText(text: str):
-    """
-    :param text: just any string
-    :return: cleaned string just containing charachters a-z and A-Z, nothing else
-    """
-    return re.sub('[^A-Za-z]+', ' ', text)
+
+from sklearn.neighbors import NearestNeighbors
+
+def split_line(line):
+    results = {"ID": [],
+               "link": [],
+               "topics": [],
+               "title": []
+               }
+    line = line.rstrip()
+    # print(line)
+    # By splitting the line at the comma we can easy extract the ID, link and title:
+    comma_split = line.split(",")
+    results["ID"].append(int(comma_split[0]))
+    results["link"].append(comma_split[1])
+    results["title"].append(comma_split[2])
+
+    # By finding the last [ we can find where the "topics-section" is:
+    klammer_split = line.split("[")
+    topic_list = re.findall(r"'(.*?)'", klammer_split[-1])
+    results["topics"].append(topic_list)
+
+    return results
+
+def get_lines_of_file(file):
+    with open(file,"r") as f:
+        for i, _ in enumerate(f):
+            pass
+    return i
 
 
 if __name__ == "__main__":
     FILE = "enwiki-clean-categories_1000.csv"
 
+    lines = get_lines_of_file(FILE)
+
+    sep = int(lines/3)
+
+    training = sep
+    test = sep*2
+    validation = lines
+
+    # ========================
+    # TRAINING:
+    # ========================
     with open(FILE, "r") as f:
-        for line in f:
-            try:  # <- something at some point will not match the pattern and we don't want our program to exit due to this ;)
-                content = {"lemma": [],
-                           "stemm": []
-                           }
-                results = {"ID": [],
-                           "link": [],
-                           "content": content,
-                           "topics": [],
-                           "title": []
-                           }
-                line = line.rstrip()
-                # print(line)
-                # By splitting the line at the comma we can easy extract the ID, link and title:
-                comma_split = line.split(",")
-                results["ID"].append(int(comma_split[0]))
-                results["link"].append(comma_split[1])
-                results["title"].append(comma_split[2])
+        for i,line in enumerate(f):
+            if i > training:
+                break
 
-                # By finding the last [ we can find where the "topics-section" is:
-                klammer_split = line.split("[")
-                topic_list = re.findall(r"'(.*?)'", klammer_split[-1])
-                results["topics"].append(topic_list)
+            results = split_line(line)
 
-                # Find text: (this is just everything in between the last two)
-                text = " ".join(comma_split[3:])
-                text = " ".join(text.split("[")[:-1])
-                text = text.replace('"', '')
+            with open(FILE,"r") as f2:
+                for j,line2 in enumerate(f2):
+                    if j > training:
+                        break
+                    if j<=i:
+                        continue
 
-                text = cleanText(text)  # get rid of everything else than plain text
+
+                    results2 = split_line(line2)
+                    inter_set = set(results["topics"][0]).intersection(results2["topics"][0])
+                    if len(inter_set) >=2:
+                        print(inter_set,i,j)
+
+
+
+
+
