@@ -11,8 +11,13 @@ def connect_to_hbase(host):
 
 
 def connect_to_table(connection, table_name):
+    """Connect to table in HBase and creates batch
+    :param connection: connection in HBase
+    :param table_name: string
+    :return: table_batch for writing
+    """
     table = connection.table(table_name)
-    batch = table.batch(batch_size=1000)
+    batch = table.batch(batch_size=1000) # if batch_size is reached -> batch.send()
     return batch
 
 
