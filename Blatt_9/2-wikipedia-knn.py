@@ -2,17 +2,23 @@ import re
 from nltk.stem.snowball import SnowballStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from collections import Counter
-from sklearn.neighbors import NearestNeighbors
+from sklearn.neighbors import KNeighborsClassifier
 
 stemmer = SnowballStemmer("english") # defines the stemmer language
 
 
-def split_line(results, line):
+def split_line(line):
     """
-    :param results: result dict
     :param line: wiki content line
     :return results: structurized data with stemmed words with frequency
     """
+
+    results = {"ID": [],
+               "link": [],
+               "topics": [],
+               "title": [],
+               "content": []
+    }
 
     # Split:
     line = line.rstrip()
@@ -33,12 +39,12 @@ def split_line(results, line):
     text = " ".join(text.split("[")[:-1])
     text = text.replace('"', '')
 
-    text = cleanText(text)  # get rid of everything else than plain text
+    results["content"].append(cleanText(text))  # get rid of everything else than plain text
 
-    wordlist = text.split(" ")  # each word becomes one element in this list
+    #wordlist = text.split(" ")  # each word becomes one element in this list
 
     # Stemming:
-    results["content"].append([stemWord(word) for word in wordlist])
+    #results["content"].append([stemWord(word) for word in wordlist])
     #count_stemmed = countWords(stemmed_list)
     #del count_stemmed["s"]
     #results["content"].append(count_stemmed)
@@ -84,20 +90,34 @@ if __name__ == "__main__":
     test = sep*2
     validation = lines
 
-    wiki_struc = {"ID": [],
-               "link": [],
-               "topics": [],
-               "title": [],
-               "content": []
-    }
+
+    #title, topic, clean text
+    set_train = [[], [], []]
+    set_test = [[], [], []]
+    set_validation = [[], [], []]
+
 
     with open(FILE, "r") as f:
         for i, line in enumerate(f):
             if i > training:
                 break
-            wiki_struc = split_line(wiki_struc, line)
+            results = split_line(line)
 
-    print(len(wiki_struc["content"]))
+            set_train[0].append(results["title"][0])
+            set_train[1].append(results["topics"][0])
+            set_train[2].append(results["content"][0])
+
+    # Define the TFIDF vectorizer that will be used to process the data
+    tfidf_vectorizer = TfidfVectorizer()
+    # Apply this vectorizer to the full dataset to create normalized vectors
+    tfidf_matrix = tfidf_vectorizer.fit_transform(set_train[2])
+
+    nbr = KNeighborsClassifier(n_neighbors=10)
+    nbr.fit(tfidf_matrix)
+
+    
+
+
 
     """
     # IDEA
