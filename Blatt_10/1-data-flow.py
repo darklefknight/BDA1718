@@ -65,6 +65,26 @@ class DataFlow(object):
                 f.write("%s\n"%";".join([str(s) for s in line])) # converts each element of each tuple into a string
 
     def filter(self,function):
+        """
+        since the data takes each line seperate as argument none needs to be provided.
+
+        :param function: some function to process a line (tuple)
+        :return: self
+
+        Example:
+        >>> d.filter(lambda x : x[-1] < 1)
+
+        The example would keep each line where the last element is smaller than 1.
+        """
+
+        self.new_data = []
+        for line in self.data:
+            if function(line) == True:
+                self.new_data.append(line)
+
+        self.data = self.new_data.copy() # the copy() is to not just point to the same location in the storage.
+        del self.new_data
+
         return self
 
     def map(self,function):
@@ -81,6 +101,7 @@ class DataFlow(object):
 
     def join(self,function):
         pass
+
 
 
 if __name__ == "__main__":
