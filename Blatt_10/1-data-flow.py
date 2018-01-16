@@ -218,8 +218,28 @@ class DataFlow(object):
 
         return self.__returnDataFlow()
 
-    def join(self,function):
-        pass
+    def join(self,y,function):
+        """
+        Joins two datasets. y needs to be of the DataFlow Class as well.
+        Furthermore y needs to have the same length as self.data.
+
+        :param y:
+        :param function:
+        :return:
+        """
+        self.new_data = []
+
+        # Check if both dataset have same length:
+        if not len(y.data) == len(self.data):
+            print("For joining both datasets need to have the same length.")
+            return None
+
+        for a,b in zip(self.data,y.data):
+            result = function(a,b)
+            self.new_data.append(result)
+
+        return self.__returnDataFlow()
+
 
     def __returnDataFlow(self,data=None):
         """
@@ -246,8 +266,23 @@ def test_flatmap(x):
     else:
         return []
 
+def test_join(x,y):
+    """
+    Adds each value from x to y
+
+    :param x: tuple
+    :param y: tuple
+    :return: tuple
+    """
+    result = []
+    for a,b in zip(x,y):
+        result.append(a+b)
+
+    result = tuple(result)
+    return result
+
 if __name__ == "__main__":
-    FILE = "/home/mpim/m300517/Downloads/Cart_Site201602.csv"
+    FILE = "test.txt"
     df = DataFlow()
     data = df.read(FILE,delimiter=";",header_lines=2)
 
@@ -256,4 +291,5 @@ if __name__ == "__main__":
     grouped = data.group(lambda x : x[0]) # group by first column
     fmapped = data.flatmap(test_flatmap)
     reduced = grouped.reduce(lambda x : sum(y[-1] for y in x))
+    joined = data.join(data,test_join)
 
