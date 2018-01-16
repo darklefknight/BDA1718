@@ -201,7 +201,22 @@ class DataFlow(object):
         return self.__returnDataFlow()
 
     def reduce(self,function):
-        pass
+        """
+        Reduces grouped data, so that for every group the reduce will be called separately.
+
+        :param function:
+        :return: self
+        """
+        check = self.__check_type(dict)
+        if not check:
+            return None
+
+        self.new_data = []
+        for key in self.data:
+            result = function(self.data[key])
+            self.new_data.append(result)
+
+        return self.__returnDataFlow()
 
     def join(self,function):
         pass
@@ -217,6 +232,12 @@ class DataFlow(object):
         else:
             return DataFlow(data)
 
+    def __check_type(self,data_type):
+        if type(self.data) != data_type:
+            print("The reduce function can only be called with grouped data.")
+            return None
+        else:
+            return "Working"
 
 def test_flatmap(x):
     if x[-1] < 0.01:
@@ -234,4 +255,5 @@ if __name__ == "__main__":
     mapped = data.map(lambda x : (x[0],x[1],x[-2])) # map first, second and second-last column
     grouped = data.group(lambda x : x[0]) # group by first column
     fmapped = data.flatmap(test_flatmap)
+    reduced = grouped.reduce(lambda x : sum(y[-1] for y in x))
 
