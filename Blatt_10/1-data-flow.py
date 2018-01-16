@@ -1,3 +1,10 @@
+"""
+Nr1 by Finn Burgemeister and Tobias Machnitzki
+
+This Module contains the DataFlow Class.
+Every function will be tested when called as main module.
+"""
+
 class DataFlow(object):
 
     def __init__(self,data=None):
