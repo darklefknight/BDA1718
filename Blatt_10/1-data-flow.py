@@ -19,7 +19,6 @@ class DataFlow(object):
         else:
             return "Class to process data from csv files."
 
-
     def read(self,file,delimiter=",",comments="#",header_lines=0):
         """
         Reads a csv file into the variable self.data. Keeping one line as one tuple.
@@ -66,7 +65,7 @@ class DataFlow(object):
 
     def filter(self,function):
         """
-        since the data takes each line seperate as argument none needs to be provided.
+        Since the data takes each line seperate as argument none needs to be provided.
 
         :param function: some function to process a line (tuple)
         :return: self
@@ -88,6 +87,22 @@ class DataFlow(object):
         return self
 
     def map(self,function):
+        """
+        This function maps each line depending on the given function.
+
+        :param function: some function to define how things should be mapped.
+        :return: self
+
+        Example:
+        >>> d.map(lambda x : ( x[0],x[1] ))
+        """
+        self.new_data = []
+        for line in self.data:
+            self.new_data.append(function(line)) # append the result of the function for each line.
+
+        self.data = self.new_data.copy() # the copy() is to not just point to the same location in the storage.
+        del self.new_data
+
         return self
 
     def flatmap(self,function):
