@@ -1,7 +1,7 @@
 class DataFlow(object):
 
-    def __init__(self):
-        self.data = None
+    def __init__(self,data=None):
+        self.data = data
 
     def __str__(self):
         """
@@ -30,7 +30,7 @@ class DataFlow(object):
         :param header_lines: Integer: Number of lines which should be skipped at the beginning
         :return: self
         """
-        self.data = []
+        self.new_data = []
         header = 0
         with open(file,"r") as f:
             for line in f:
@@ -50,9 +50,9 @@ class DataFlow(object):
 
                 splitted = tuple(splitted) # converting the list into a tuple
 
-                self.data.append(splitted) # append the tuple to the data-list
+                self.new_data.append(splitted) # append the tuple to the data-list
 
-        return self
+        return self.__returnDataFlow()
 
     def write(self,file):
         """
@@ -82,9 +82,8 @@ class DataFlow(object):
                 self.new_data.append(line)
 
         self.data = self.new_data.copy() # the copy() is to not just point to the same location in the storage.
-        del self.new_data
 
-        return self
+        return self.__returnDataFlow()
 
     def map(self,function):
         """
@@ -101,9 +100,8 @@ class DataFlow(object):
             self.new_data.append(function(line)) # append the result of the function for each line.
 
         self.data = self.new_data.copy() # the copy() is to not just point to the same location in the storage.
-        del self.new_data
 
-        return self
+        return self.__returnDataFlow()
 
     def flatmap(self,function):
         pass
@@ -116,6 +114,9 @@ class DataFlow(object):
 
     def join(self,function):
         pass
+
+    def __returnDataFlow(self):
+        return DataFlow(self.new_data)
 
 
 
