@@ -132,6 +132,7 @@ class DataFlow(object):
         Example:
         >>> d.map(lambda x : ( x[0],x[1] ))
         """
+
         self.new_data = []
         for line in self.data:
             self.new_data.append(function(line)) # append the result of the function for each line.
@@ -142,7 +143,13 @@ class DataFlow(object):
         """
         I did not really understand what this should do.
         """
-        pass
+
+        self.new_data = []
+        for line in self.data:
+            lists = function(line)
+            self.new_data.append(tuple(lists)) # append the result of the function for each line.
+
+        return self.__returnDataFlow()
 
 
     def group(self,function):
@@ -211,6 +218,12 @@ class DataFlow(object):
             return DataFlow(data)
 
 
+def test_flatmap(x):
+    if x[-1] < 0.01:
+        return x[1],x[2],x[3]
+
+    else:
+        return []
 
 if __name__ == "__main__":
     FILE = "/home/mpim/m300517/Downloads/Cart_Site201602.csv"
@@ -220,4 +233,5 @@ if __name__ == "__main__":
     filtered = data.filter(lambda x : x[-1] < 1) # keep lines where laast column is smaller than 1
     mapped = data.map(lambda x : (x[0],x[1],x[-2])) # map first, second and second-last column
     grouped = data.group(lambda x : x[0]) # group by first column
+    fmapped = data.flatmap(test_flatmap)
 
