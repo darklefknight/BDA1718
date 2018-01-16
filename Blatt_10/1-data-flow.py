@@ -300,3 +300,11 @@ if __name__ == "__main__":
     reduced = grouped.reduce(lambda x : sum(y[-1] for y in x))
     joined = data.join(data,test_join)
 
+    print("Data", data)
+    print("filtered", filtered)
+    print("mapped", mapped)
+    print("grouped",grouped)
+    print("flatmapped", fmapped)
+    print("reduced",reduced.data)
+    print("joined", joined.data)
+
