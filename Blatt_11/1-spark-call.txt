@@ -1,0 +1,6 @@
+call:
+
+PYSPARK_PYTHON=python3 pyspark --master yarn-client
+
+output:
+
