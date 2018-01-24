@@ -9,7 +9,7 @@ conf = SparkConf()
 conf.setAppName("MyApp")
 sc = SparkContext(conf=conf)
 
-def parseInput(file_name="/user/bigdata/11/enwiki-10k.csv"):
+def parseInput(file_name="/user/bigdata/enwiki-10k.csv"):
     # Read in the data and clean it
     rdd = sc.textFile(file_name)
     return rdd
