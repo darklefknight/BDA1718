@@ -1,3 +1,9 @@
+from pyspark import SparkConf, SparkContext
+
+conf = SparkConf()
+conf.setAppName("MyApp")
+sc = SparkContext(conf=conf)
+
 # Create an RDD using /user/bigdata/enwiki-10k.csv
 lines = sc.textFile("/user/bigdata/enwiki-10k.csv")
 
