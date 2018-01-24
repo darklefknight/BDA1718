@@ -24,6 +24,7 @@ if __name__ == "__main__":
     # numerated_articles = articles.map(lambda x: (x,counter.add(1)))
     words_in_article = articles.map(lambda x: (x.split(" ")))
 
+
     print(words_in_article.take(5))
 
 
