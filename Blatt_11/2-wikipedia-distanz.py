@@ -1,10 +1,10 @@
 from pyspark import SparkConf, SparkContext
+from operator import add
 import re
-import collections
+from collections import Counter
 
 # Call spark using this for example:
 # PYSPARK_PYTHON=python3 pyspark --master yarn-client --driver-memory 500m --executor-memory 500m --conf spark.ui.port=4711
-
 
 
 def parseInput(sc,file_name="/user/bigdata/enwiki-10k.csv"):
@@ -12,20 +12,19 @@ def parseInput(sc,file_name="/user/bigdata/enwiki-10k.csv"):
     rdd = sc.textFile(file_name)
     return rdd
 
-
-
 if __name__ == "__main__":
     conf = SparkConf()
     conf.setAppName("Distance")
     sc = SparkContext(conf=conf)
     articles = parseInput(sc)
 
-    # counter = sc.accumulator(0)
-    # numerated_articles = articles.map(lambda x: (x,counter.add(1)))
-    words_in_article = articles.map(lambda x: (x.split(" ")))
+    # count words per article
+    nwords_article = articles.map(lambda line: Counter(line.split(' ')))
 
 
-    print(words_in_article.take(5))
+
+    print((nwords_article.take(4)[0]+nwords_article.take(4)[1]))
+    print("TEST")
 
 
 
